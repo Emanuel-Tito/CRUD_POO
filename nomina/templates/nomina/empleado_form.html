@@ -1,0 +1,14 @@
+{% extends 'nomina/base.html' %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Empleado</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'empleado_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

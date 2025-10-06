@@ -1,0 +1,57 @@
+{% extends 'nomina/base.html' %}
+
+{% block content %}
+<h2>Nómina: {{ nomina.aniomes }}</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5>Totales</h5>
+                <p><strong>Total Ingresos:</strong> ${{ nomina.tot_ing }}</p>
+                <p><strong>Total Descuentos:</strong> ${{ nomina.tot_des }}</p>
+                <p><strong>Neto:</strong> ${{ nomina.neto }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Agregar Detalle</h4>
+<form method="post" class="mb-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Agregar Detalle</button>
+</form>
+
+<h4>Detalles de la Nómina</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Empleado</th>
+            <th>Sueldo</th>
+            <th>Bono</th>
+            <th>Total Ing.</th>
+            <th>IESS</th>
+            <th>Préstamo</th>
+            <th>Total Des.</th>
+            <th>Neto</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in detalles %}
+        <tr>
+            <td>{{ detalle.empleado.nombre }}</td>
+            <td>${{ detalle.sueldo }}</td>
+            <td>${{ detalle.bono }}</td>
+            <td>${{ detalle.tot_ing }}</td>
+            <td>${{ detalle.iess }}</td>
+            <td>${{ detalle.prestamo }}</td>
+            <td>${{ detalle.tot_des }}</td>
+            <td>${{ detalle.neto }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'nomina_list' %}" class="btn btn-secondary">Volver a Lista</a>
+{% endblock %}

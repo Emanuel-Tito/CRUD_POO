@@ -1,0 +1,13 @@
+{% extends 'nomina/base.html' %}
+
+{%block content %}
+<h1>Registro</h1>
+{{error}}
+<form action="{% url 'signup' %}" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button>
+        Sign up
+    </button>
+</form>
+{%endblock %}

@@ -1,0 +1,36 @@
+{% extends 'nomina/base.html' %}
+
+{% block content %}
+<h2>Lista de Empleados</h2>
+<a href="{% url 'empleado_create' %}" class="btn btn-primary mb-3">Nuevo Empleado</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Sueldo</th>
+            <th>Departamento</th>
+            <th>Cargo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for empleado in page_obj %}
+        <tr>
+            <td>{{ empleado.cedula }}</td>
+            <td>{{ empleado.nombre }}</td>
+            <td>${{ empleado.sueldo }}</td>
+            <td>{{ empleado.departamento }}</td>
+            <td>{{ empleado.cargo }}</td>
+            <td>
+                <a href="{% url 'empleado_update' empleado.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'empleado_delete' empleado.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include 'nomina/pagination.html' %}
+{% endblock %}
