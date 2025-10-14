@@ -1,0 +1,40 @@
+{% extends 'nomina/base.html' %}
+{% block title %}Sobretiempos{% endblock %}
+{% block content %}
+<h2>Registro de Sobretiempos</h2>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col"><input type="number" name="empleado" placeholder="Empleado ID" class="form-control" value="{{ request.GET.empleado }}"></div>
+  <div class="col"><input type="number" name="tipo" placeholder="Tipo ID" class="form-control" value="{{ request.GET.tipo }}"></div>
+  <div class="col"><input type="date" name="desde" class="form-control" value="{{ request.GET.desde }}"></div>
+  <div class="col"><input type="date" name="hasta" class="form-control" value="{{ request.GET.hasta }}"></div>
+  <div class="col"><button type="submit" class="btn btn-secondary">Filtrar</button></div>
+</form>
+
+<a href="{% url 'sobretiempo:create' %}" class="btn btn-primary mb-3">Nuevo Registro</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr><th>Empleado</th><th>Fecha</th><th>Tipo</th><th>Horas</th><th>Valor</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for s in page_obj %}
+    <tr>
+      <td>{{ s.empleado.nombre }}</td>
+      <td>{{ s.fecha_registro }}</td>
+      <td>{{ s.tipo_sobretiempo.descripcion }}</td>
+      <td>{{ s.numero_horas }}</td>
+      <td>{{ s.valor }}</td>
+      <td>
+        <a href="{% url 'sobretiempo:update' s.pk %}">Editar</a> |
+        <a href="{% url 'sobretiempo:delete' s.pk %}">Eliminar</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No hay registros.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% include 'nomina/pagination.html' %}
+{% endblock %}

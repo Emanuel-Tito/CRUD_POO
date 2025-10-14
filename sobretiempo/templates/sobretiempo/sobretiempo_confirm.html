@@ -1,0 +1,15 @@
+{% extends 'nomina/base.html' %}
+{% block title %}Eliminar Sobretiempo{% endblock %}
+{% block content %}
+<h2>¿Eliminar este registro?</h2>
+<ul>
+  <li><strong>Empleado:</strong> {{ sobretiempo.empleado.nombre }}</li>
+  <li><strong>Fecha:</strong> {{ sobretiempo.fecha_registro }}</li>
+  <li><strong>Horas:</strong> {{ sobretiempo.numero_horas }}</li>
+</ul>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Eliminar</button>
+  <a href="{% url 'sobretiempo:list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

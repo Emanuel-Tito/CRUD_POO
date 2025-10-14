@@ -15,6 +15,7 @@
                 <a class="nav-link" href="{% url 'empleado_list' %}">Empleados</a>
                 <a class="nav-link" href="{% url 'nomina_list' %}">Nóminas</a>
                 <a class="nav-link" href="{% url 'prestamos:prestamo_list' %}">Prestamos</a>
+                <a class="nav-link" href="{% url 'sobretiempo:list' %}">Sobretiempos</a>
                 <a class="nav-link" href="/admin/" target="_blank">Admin</a>
                 {% if user.is_authenticated %}
                 <a class="nav-link" href="{% url 'signout' %}">Sign out</a>

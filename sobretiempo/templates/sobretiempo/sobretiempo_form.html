@@ -1,0 +1,11 @@
+{% extends 'nomina/base.html' %}
+{% block title %}Formulario de Sobretiempo{% endblock %}
+{% block content %}
+<h2>{{ form.instance.pk|yesno:"Editar Sobretiempo,Nuevo Sobretiempo" }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Guardar</button>
+  <a href="{% url 'sobretiempo:list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
