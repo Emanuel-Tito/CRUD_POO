@@ -1,0 +1,20 @@
+<!-- prestamos/templates/prestamos/prestamo_confirm_delete.html -->
+{% extends 'nomina/base.html' %}
+
+{% block title %}Eliminar préstamo{% endblock %}
+
+{% block content %}
+<h2>¿Estás seguro de que deseas eliminar este préstamo?</h2>
+
+<ul class="list-group mb-3">
+  <li class="list-group-item"><strong>Empleado:</strong> {{ prestamo.empleado.nombre }}</li>
+  <li class="list-group-item"><strong>Monto:</strong> {{ prestamo.monto }}</li>
+  <li class="list-group-item"><strong>Fecha:</strong> {{ prestamo.fecha_prestamo }}</li>
+</ul>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+  <a href="{% url 'prestamos:prestamo_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

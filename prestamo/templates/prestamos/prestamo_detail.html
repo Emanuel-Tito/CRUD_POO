@@ -1,0 +1,21 @@
+<!-- prestamos/templates/prestamos/prestamo_detail.html -->
+{% extends 'nomina/base.html' %}
+
+{% block title %}Detalle del préstamo{% endblock %}
+
+{% block content %}
+<h2>Detalle del préstamo</h2>
+
+<ul class="list-group">
+  <li class="list-group-item"><strong>Empleado:</strong> {{ prestamo.empleado.nombre }}</li>
+  <li class="list-group-item"><strong>Tipo:</strong> {{ prestamo.tipo_prestamo.descripcion }}</li>
+  <li class="list-group-item"><strong>Fecha:</strong> {{ prestamo.fecha_prestamo }}</li>
+  <li class="list-group-item"><strong>Monto:</strong> {{ prestamo.monto }}</li>
+  <li class="list-group-item"><strong>Interés:</strong> {{ prestamo.interes }}</li>
+  <li class="list-group-item"><strong>Total a pagar:</strong> {{ prestamo.monto_pagar }}</li>
+  <li class="list-group-item"><strong>Cuota mensual:</strong> {{ prestamo.cuota_mensual }}</li>
+  <li class="list-group-item"><strong>Saldo:</strong> {{ prestamo.saldo }}</li>
+</ul>
+
+<a href="{% url 'prestamos:prestamo_list' %}" class="btn btn-secondary mt-3">Volver</a>
+{% endblock %}

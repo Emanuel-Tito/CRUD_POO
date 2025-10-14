@@ -1,0 +1,73 @@
+<!-- prestamos/templates/prestamos/prestamo_list.html -->
+{% extends 'nomina/base.html' %}
+
+{% block title %}Préstamos{% endblock %}
+
+{% block content %}
+<h1>Préstamos</h1>
+
+<form method="get" class="mb-3">
+  <div class="row g-2">
+    <div class="col">
+      <label>Empleado</label>
+      <input type="number" name="empleado" value="{{ request.GET.empleado }}" class="form-control">
+    </div>
+    <div class="col">
+      <label>Tipo</label>
+      <input type="number" name="tipo" value="{{ request.GET.tipo }}" class="form-control">
+    </div>
+    <div class="col">
+      <label>Desde</label>
+      <input type="date" name="desde" value="{{ request.GET.desde }}" class="form-control">
+    </div>
+    <div class="col">
+      <label>Hasta</label>
+      <input type="date" name="hasta" value="{{ request.GET.hasta }}" class="form-control">
+    </div>
+    <div class="col d-flex align-items-end">
+      <button type="submit" class="btn btn-secondary">Filtrar</button>
+    </div>
+  </div>
+</form>
+
+<a href="{% url 'prestamos:create' %}" class="btn btn-primary mb-3">Nuevo préstamo</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Empleado</th>
+      <th>Tipo</th>
+      <th>Fecha</th>
+      <th>Monto</th>
+      <th>Interés</th>
+      <th>Total a pagar</th>
+      <th>Cuota</th>
+      <th>Saldo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in page_obj %}
+    <tr>
+      <td>{{ p.empleado.nombre }}</td>
+      <td>{{ p.tipo_prestamo.descripcion }}</td>
+      <td>{{ p.fecha_prestamo }}</td>
+      <td>{{ p.monto }}</td>
+      <td>{{ p.interes }}</td>
+      <td>{{ p.monto_pagar }}</td>
+      <td>{{ p.cuota_mensual }}</td>
+      <td>{{ p.saldo }}</td>
+      <td>
+        <a href="{% url 'prestamos:detail' p.pk %}">Ver</a> |
+        <a href="{% url 'prestamos:update' p.pk %}">Editar</a> |
+        <a href="{% url 'prestamos:delete' p.pk %}">Eliminar</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="9">No hay registros.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% include 'nomina/pagination.html' %}
+{% endblock %}

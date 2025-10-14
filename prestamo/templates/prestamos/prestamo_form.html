@@ -1,0 +1,19 @@
+<!-- prestamos/templates/prestamos/prestamo_form.html -->
+{% extends 'nomina/base.html' %}
+
+{% block title %}{{ form.instance.pk|yesno:"Editar préstamo,Nuevo préstamo" }}{% endblock %}
+
+{% block content %}
+<h2>{{ form.instance.pk|yesno:"Editar préstamo,Nuevo préstamo" }}</h2>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'prestamos:prestamo_list' %}" class="btn btn-secondary">Cancelar</a>
+  {% else %}
+    <div class="alert alert-danger">No se recibió el formulario.</div>
+  {% endif %}
+</form>
+{% endblock %}
