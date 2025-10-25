@@ -1,23 +1,26 @@
 from django.urls import path
-from . import views
+from .views import (
+    EmpleadoListView, EmpleadoCreateView, EmpleadoUpdateView, EmpleadoDeleteView,
+    NominaListView, NominaCreateView, NominaDetailView, NominaDeleteView,
+    HomeView, signup_view, signout_view, signinn
+)
+
+
+app_name='nomina'
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    
-    # URLs para Empleados
-    path('empleados/', views.empleado_list, name='empleado_list'),
-    path('empleados/nuevo/', views.empleado_create, name='empleado_create'),
-    path('empleados/editar/<int:pk>/', views.empleado_update, name='empleado_update'),
-    path('empleados/eliminar/<int:pk>/', views.empleado_delete, name='empleado_delete'),
-    
-    # URLs para Nóminas
-    path('nominas/', views.nomina_list, name='nomina_list'),
-    path('nominas/nueva/', views.nomina_create, name='nomina_create'),
-    path('nominas/<int:pk>/', views.nomina_detail, name='nomina_detail'),
-    path('nominas/eliminar/<int:pk>/', views.nomina_delete, name='nomina_delete'),
+    path('', HomeView.as_view(), name='home'),
+    path('empleados/', EmpleadoListView.as_view(), name='empleado_list'),
+    path('empleados/create/', EmpleadoCreateView.as_view(), name='empleado_create'),
+    path('empleados/<int:pk>/update/', EmpleadoUpdateView.as_view(), name='empleado_update'),
+    path('empleados/<int:pk>/delete/', EmpleadoDeleteView.as_view(), name='empleado_delete'),
 
-    path('signup/', views.signup_view, name='signup'),
-    path('signout/', views.signout_view, name='signout'),
-    path('signin/', views.signinn, name='signin'),
-    
+    path('nominas/', NominaListView.as_view(), name='nomina_list'),
+    path('nominas/create/', NominaCreateView.as_view(), name='nomina_create'),
+    path('nominas/<int:pk>/', NominaDetailView.as_view(), name='nomina_detail'),
+    path('nominas/<int:pk>/delete/', NominaDeleteView.as_view(), name='nomina_delete'),
+
+    path('signup/', signup_view, name='signup'),
+    path('signin/', signinn, name='signin'),
+    path('signout/', signout_view, name='signout'),
 ]

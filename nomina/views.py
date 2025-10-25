@@ -1,25 +1,70 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.db.models import Avg
+from django.urls import reverse_lazy
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.db import IntegrityError, models
 from .models import Empleado, Nomina
 from .forms import EmpleadoForm, NominaForm, NominaDetalleForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 
+"""def home(request):
+    # Obtener estadísticas
+    total_empleados = Empleado.objects.count()
+    ultima_nomina = Nomina.objects.order_by("-aniomes").first()
 
-# Vistas para Empleados
-def empleado_list(request):
+    # Calcular promedio de sueldos
+    if total_empleados > 0:
+        promedio_sueldos = Empleado.objects.aggregate(avg_sueldo=models.Avg("sueldo"))[
+            "avg_sueldo"
+        ]
+    else:
+        promedio_sueldos = 0
+
+    context = {
+        "total_empleados": total_empleados,
+        "ultima_nomina": ultima_nomina,
+        "promedio_sueldos": promedio_sueldos,
+    }
+    return render(request, "nomina/home.html", context)"""
+class HomeView(TemplateView):
+    template_name = "nomina/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        total_empleados = Empleado.objects.count()
+        ultima_nomina = Nomina.objects.order_by("-aniomes").first()
+
+        if total_empleados > 0:
+            promedio_sueldos = Empleado.objects.aggregate(avg_sueldo=Avg("sueldo"))["avg_sueldo"]
+        else:
+            promedio_sueldos = 0
+
+        context.update({
+            "total_empleados": total_empleados,
+            "ultima_nomina": ultima_nomina,
+            "promedio_sueldos": promedio_sueldos,
+        })
+        return context
+
+#EMPLEADOS
+"""def empleado_list(request):
     empleados = Empleado.objects.all()
     paginator = Paginator(empleados, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    return render(request, "nomina/empleado_list.html", {"page_obj": page_obj})
+    return render(request, "nomina/empleado_list.html", {"page_obj": page_obj})"""
+class EmpleadoListView(ListView):
+    model = Empleado
+    template_name = "nomina/empleado_list.html"
+    context_object_name = "page_obj"
+    paginate_by = 10
 
 
-def empleado_create(request):
+"""def empleado_create(request):
     if request.method == "POST":
         form = EmpleadoForm(request.POST)
         if form.is_valid():
@@ -28,10 +73,19 @@ def empleado_create(request):
             return redirect("empleado_list")
     else:
         form = EmpleadoForm()
-    return render(request, "nomina/empleado_form.html", {"form": form})
+    return render(request, "nomina/empleado_form.html", {"form": form})"""
+class EmpleadoCreateView(CreateView):
+    model = Empleado
+    form_class = EmpleadoForm
+    template_name = "nomina/empleado_form.html"
+    success_url = reverse_lazy("nomina:empleado_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Empleado creado exitosamente.")
+        return super().form_valid(form)
 
 
-def empleado_update(request, pk):
+"""def empleado_update(request, pk):
     empleado = get_object_or_404(Empleado, pk=pk)
     if request.method == "POST":
         form = EmpleadoForm(request.POST, instance=empleado)
@@ -41,10 +95,19 @@ def empleado_update(request, pk):
             return redirect("empleado_list")
     else:
         form = EmpleadoForm(instance=empleado)
-    return render(request, "nomina/empleado_form.html", {"form": form})
+    return render(request, "nomina/empleado_form.html", {"form": form})"""
+class EmpleadoUpdateView(UpdateView):
+    model = Empleado
+    form_class = EmpleadoForm
+    template_name = "nomina/empleado_form.html"
+    success_url = reverse_lazy("nomina:empleado_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Empleado actualizado exitosamente.")
+        return super().form_valid(form)
 
 
-def empleado_delete(request, pk):
+"""def empleado_delete(request, pk):
     empleado = get_object_or_404(Empleado, pk=pk)
     if request.method == "POST":
         empleado.delete()
@@ -52,19 +115,33 @@ def empleado_delete(request, pk):
         return redirect("empleado_list")
     return render(
         request, "nomina/empleado_confirm_delete.html", {"empleado": empleado}
-    )
+    )"""
+class EmpleadoDeleteView(DeleteView):
+    model = Empleado
+    template_name = "nomina/empleado_confirm_delete.html"
+    success_url = reverse_lazy("nomina:empleado_list")
+    context_object_name = "empleado"
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Empleado eliminado exitosamente.")
+        return super().delete(request, *args, **kwargs)
 
 
-# Vistas para Nóminas
-def nomina_list(request):
+#NOMINAS
+"""def nomina_list(request):
     nominas = Nomina.objects.all().order_by("-aniomes")
     paginator = Paginator(nominas, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    return render(request, "nomina/nomina_list.html", {"page_obj": page_obj})
+    return render(request, "nomina/nomina_list.html", {"page_obj": page_obj})"""
+class NominaListView(ListView):
+    model = Nomina
+    template_name = "nomina/nomina_list.html"
+    context_object_name = "page_obj"
+    paginate_by = 10
+    ordering = ["-aniomes"]
 
-
-def nomina_create(request):
+"""def nomina_create(request):
     if request.method == "POST":
         form = NominaForm(request.POST)
         if form.is_valid():
@@ -73,10 +150,18 @@ def nomina_create(request):
             return redirect("nomina_detail", pk=nomina.pk)
     else:
         form = NominaForm()
-    return render(request, "nomina/nomina_form.html", {"form": form})
+    return render(request, "nomina/nomina_form.html", {"form": form})"""
+class NominaCreateView(CreateView):
+    model = Nomina
+    form_class = NominaForm
+    template_name = "nomina/nomina_form.html"
 
+    def form_valid(self, form):
+        nomina = form.save()
+        messages.success(self.request, "Nómina creada exitosamente.")
+        return redirect("nomina:nomina_detail", pk=nomina.pk)
 
-def nomina_detail(request, pk):
+"""def nomina_detail(request, pk):
     nomina = get_object_or_404(Nomina, pk=pk)
     detalles = nomina.nominadetalle_set.all()
 
@@ -95,39 +180,45 @@ def nomina_detail(request, pk):
         request,
         "nomina/nomina_detail.html",
         {"nomina": nomina, "detalles": detalles, "form": form},
-    )
+    )"""
+class NominaDetailView(DetailView):
+    model = Nomina
+    template_name = "nomina/nomina_detail.html"
+    context_object_name = "nomina"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["detalles"] = self.object.nominadetalle_set.all()
+        context["form"] = NominaDetalleForm()
+        return context
 
-def nomina_delete(request, pk):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = NominaDetalleForm(request.POST)
+        if form.is_valid():
+            detalle = form.save(commit=False)
+            detalle.nomina = self.object
+            detalle.save()
+            messages.success(request, "Detalle agregado exitosamente.")
+        return redirect("nomina:nomina_detail", pk=self.object.pk)
+
+"""def nomina_delete(request, pk):
     nomina = get_object_or_404(Nomina, pk=pk)
     if request.method == "POST":
         nomina.delete()
         messages.success(request, "Nómina eliminada exitosamente.")
         return redirect("nomina_list")
-    return render(request, "nomina/nomina_confirm_delete.html", {"nomina": nomina})
+    return render(request, "nomina/nomina_confirm_delete.html", {"nomina": nomina})"""
+class NominaDeleteView(DeleteView):
+    model = Nomina
+    template_name = "nomina/nomina_confirm_delete.html"
+    success_url = reverse_lazy("nomina:nomina_list")
+    context_object_name = "nomina"
 
-
-def home(request):
-    # Obtener estadísticas
-    total_empleados = Empleado.objects.count()
-    ultima_nomina = Nomina.objects.order_by("-aniomes").first()
-
-    # Calcular promedio de sueldos
-    if total_empleados > 0:
-        promedio_sueldos = Empleado.objects.aggregate(avg_sueldo=models.Avg("sueldo"))[
-            "avg_sueldo"
-        ]
-    else:
-        promedio_sueldos = 0
-
-    context = {
-        "total_empleados": total_empleados,
-        "ultima_nomina": ultima_nomina,
-        "promedio_sueldos": promedio_sueldos,
-    }
-    return render(request, "nomina/home.html", context)
-
-
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Nómina eliminada exitosamente.")
+        return super().delete(request, *args, **kwargs)
+#REGISTTRO
 def signup_view(request):
     if request.method == "GET":
         return render(request, "nomina/registro.html", {"form": UserCreationForm})
@@ -141,7 +232,7 @@ def signup_view(request):
                 )
                 user.save()
                 login(request, user)
-                return redirect('home')
+                return redirect('nomina:home')
             except IntegrityError:
                 return render(
                     request,
@@ -156,7 +247,7 @@ def signup_view(request):
 
 def signout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('nomina:home')
 
 def signinn(request):
     if request.method == 'GET':
@@ -172,4 +263,4 @@ def signinn(request):
     })
         else: 
             login(request, user)
-            return redirect('home')
+            return redirect('nomina:home')

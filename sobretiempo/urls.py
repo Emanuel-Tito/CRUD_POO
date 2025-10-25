@@ -1,11 +1,15 @@
 from django.urls import path
-from . import views
-
+from .views import (
+    SobretiempoCreateView,
+    SobretiempoUpdateView,
+    SobretiempoDeleteView,
+    SobretiempoListView,
+)
 app_name = 'sobretiempo'
-
 urlpatterns = [
-    path('', views.sobretiempo_list, name='list'),
-    path('nuevo/', views.sobretiempo_create, name='create'),
-    path('<int:pk>/editar/', views.sobretiempo_update, name='update'),
-    path('<int:pk>/eliminar/', views.sobretiempo_delete, name='delete'),
+    path('sobretiempo/', SobretiempoListView.as_view(), name='sobretiempo_list'),
+    path('sobretiempo/create/', SobretiempoCreateView.as_view(), name='sobretiempo_create'),
+    path('sobretiempo/<int:pk>/update/', SobretiempoUpdateView.as_view(), name='sobretiempo_update'),
+    path('sobretiempo/<int:pk>/delete/', SobretiempoDeleteView.as_view(), name='sobretiempo_delete'),
 ]
+

@@ -11,7 +11,7 @@
   <div class="col"><button type="submit" class="btn btn-secondary">Filtrar</button></div>
 </form>
 
-<a href="{% url 'sobretiempo:create' %}" class="btn btn-primary mb-3">Nuevo Registro</a>
+<a href="{% url 'sobretiempo:sobretiempo_create' %}" class="btn btn-primary mb-3">Nuevo Registro</a>
 
 <table class="table table-striped">
   <thead>
@@ -26,8 +26,8 @@
       <td>{{ s.numero_horas }}</td>
       <td>{{ s.valor }}</td>
       <td>
-        <a href="{% url 'sobretiempo:update' s.pk %}">Editar</a> |
-        <a href="{% url 'sobretiempo:delete' s.pk %}">Eliminar</a>
+        <a href="{% url 'sobretiempo:sobretiempo_update' s.pk %}">Editar</a> |
+        <a href="{% url 'sobretiempo:sobretiempo_delete' s.pk %}">Eliminar</a>
       </td>
     </tr>
     {% empty %}

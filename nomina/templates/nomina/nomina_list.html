@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Lista de Nóminas</h2>
-<a href="{% url 'nomina_create' %}" class="btn btn-primary mb-3">Nueva Nómina</a>
+<a href="{% url 'nomina:nomina_create' %}" class="btn btn-primary mb-3">Nueva Nómina</a>
 
 <table class="table table-striped">
     <thead>
@@ -22,8 +22,8 @@
             <td>${{ nomina.tot_des }}</td>
             <td>${{ nomina.neto }}</td>
             <td>
-                <a href="{% url 'nomina_detail' nomina.pk %}" class="btn btn-sm btn-info">Ver Detalles</a>
-                <a href="{% url 'nomina_delete' nomina.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                <a href="{% url 'nomina:nomina_detail' nomina.pk %}" class="btn btn-sm btn-info">Ver Detalles</a>
+                <a href="{% url 'nomina:nomina_delete' nomina.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
             </td>
         </tr>
         {% endfor %}

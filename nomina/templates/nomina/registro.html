@@ -6,7 +6,7 @@
   <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 
-<form method="POST" action="{% url 'signup' %}">
+<form method="POST" action="{% url 'nomina:signup' %}">
   {% csrf_token %}
   <div class="mb-3">
     {{ form.username.label_tag }}

@@ -30,7 +30,7 @@
   </div>
 </form>
 
-<a href="{% url 'prestamos:create' %}" class="btn btn-primary mb-3">Nuevo préstamo</a>
+<a href="{% url 'prestamos:prestamo_create' %}" class="btn btn-primary mb-3">Nuevo préstamo</a>
 
 <table class="table table-striped">
   <thead>
@@ -58,9 +58,9 @@
       <td>{{ p.cuota_mensual }}</td>
       <td>{{ p.saldo }}</td>
       <td>
-        <a href="{% url 'prestamos:detail' p.pk %}">Ver</a> |
-        <a href="{% url 'prestamos:update' p.pk %}">Editar</a> |
-        <a href="{% url 'prestamos:delete' p.pk %}">Eliminar</a>
+        <a href="{% url 'prestamos:prestamo_detail' p.pk %}">Ver</a> |
+        <a href="{% url 'prestamos:prestamo_update' p.pk %}">Editar</a> |
+        <a href="{% url 'prestamos:prestamo_delete' p.pk %}">Eliminar</a>
       </td>
     </tr>
     {% empty %}

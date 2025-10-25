@@ -29,7 +29,7 @@
         <p><strong>Total Ingresos:</strong> ${{ ultima_nomina.tot_ing }}</p>
         <p><strong>Total Descuentos:</strong> ${{ ultima_nomina.tot_des }}</p>
         <p><strong>Neto Pagado:</strong> ${{ ultima_nomina.neto }}</p>
-        <a href="{% url 'nomina_detail' ultima_nomina.pk %}" class="btn btn-primary">Ver Detalles</a>
+        <a href="{% url 'nomina:nomina_detail' ultima_nomina.pk %}" class="btn btn-primary">Ver Detalles</a>
     </div>
 </div>
 {% endif %}
