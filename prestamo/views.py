@@ -2,13 +2,7 @@ from . forms import PrestamoForm
 from . models import Prestamo
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-<<<<<<< HEAD
-=======
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
-from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
->>>>>>> login
 
 # Create your views here.
 """def prestamo_list(request):
