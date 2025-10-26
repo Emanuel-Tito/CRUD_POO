@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     EmpleadoListView, EmpleadoCreateView, EmpleadoUpdateView, EmpleadoDeleteView,
     NominaListView, NominaCreateView, NominaDetailView, NominaDeleteView,
-    HomeView, signup_view, signout_view, signinn
+    HomeView, SignupView, SignoutView, SigninView
 )
 
 
@@ -20,7 +20,7 @@ urlpatterns = [
     path('nominas/<int:pk>/', NominaDetailView.as_view(), name='nomina_detail'),
     path('nominas/<int:pk>/delete/', NominaDeleteView.as_view(), name='nomina_delete'),
 
-    path('signup/', signup_view, name='signup'),
-    path('signin/', signinn, name='signin'),
-    path('signout/', signout_view, name='signout'),
+    path('signup/', SignupView.as_view(), name='signup'),
+    path('signin/', SigninView.as_view(), name='signin'),
+    path('signout/', SignoutView.as_view(), name='signout'),
 ]

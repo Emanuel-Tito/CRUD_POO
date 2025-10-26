@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView, FormView, RedirectView
 from django.db.models import Avg
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -126,7 +126,6 @@ class EmpleadoDeleteView(DeleteView):
         messages.success(self.request, "Empleado eliminado exitosamente.")
         return super().delete(request, *args, **kwargs)
 
-
 #NOMINAS
 """def nomina_list(request):
     nominas = Nomina.objects.all().order_by("-aniomes")
@@ -218,8 +217,8 @@ class NominaDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Nómina eliminada exitosamente.")
         return super().delete(request, *args, **kwargs)
-#REGISTTRO
-def signup_view(request):
+# Registro de usuario
+"""def signup_view(request):
     if request.method == "GET":
         return render(request, "nomina/registro.html", {"form": UserCreationForm})
     else:
@@ -243,13 +242,43 @@ def signup_view(request):
                     request,
                     "nomina/registro.html",
                     {"form": UserCreationForm, "error": "Contraseña no coincide"},
-                )
+                )"""
+class SignupView(FormView):
+    template_name = "nomina/registro.html"
+    form_class = UserCreationForm
+    success_url = reverse_lazy("nomina:home")
 
-def signout_view(request):
+    def form_valid(self, form):
+        password1 = self.request.POST.get("password1")
+        password2 = self.request.POST.get("password2")
+        if password1 != password2:
+            return self.form_invalid(form, error="Contraseña no coincide")
+
+        try:
+            user = User.objects.create_user(
+                username=self.request.POST.get("username"),
+                password=password1,
+            )
+            login(self.request, user)
+            return redirect(self.success_url)
+        except IntegrityError:
+            return self.form_invalid(form, error="Usuario ya existe")
+
+    def form_invalid(self, form, error=None):
+        context = {"form": self.form_class(), "error": error} if error else {"form": form}
+        return render(self.request, self.template_name, context)
+# Cierre de sesión
+"""def signout_view(request):
     logout(request)
-    return redirect('nomina:home')
+    return redirect('nomina:home')"""
+class SignoutView(RedirectView):
+    pattern_name = "nomina:home"
 
-def signinn(request):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return super().get(request, *args, **kwargs)
+# Inicio de sesión
+"""def signinn(request):
     if request.method == 'GET':
         return render(request, 'nomina/signin.html', {
         'form': AuthenticationForm
@@ -263,4 +292,21 @@ def signinn(request):
     })
         else: 
             login(request, user)
-            return redirect('nomina:home')
+            return redirect('nomina:home')"""
+class SigninView(FormView):
+    template_name = "nomina/signin.html"
+    form_class = AuthenticationForm
+    success_url = reverse_lazy("nomina:home")
+
+    def form_valid(self, form):
+        username = self.request.POST.get("username")
+        password = self.request.POST.get("password")
+        user = authenticate(self.request, username=username, password=password)
+        if user is None:
+            return self.form_invalid(form, error="El usuario o contraseña es incorrecta")
+        login(self.request, user)
+        return redirect(self.success_url)
+
+    def form_invalid(self, form, error=None):
+        context = {"form": self.form_class(), "error": error} if error else {"form": form}
+        return render(self.request, self.template_name, context)

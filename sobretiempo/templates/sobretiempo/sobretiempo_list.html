@@ -5,7 +5,7 @@
 
 <form method="get" class="row g-2 mb-3">
   <div class="col"><input type="number" name="empleado" placeholder="Empleado ID" class="form-control" value="{{ request.GET.empleado }}"></div>
-  <div class="col"><input type="number" name="tipo" placeholder="Tipo ID" class="form-control" value="{{ request.GET.tipo }}"></div>
+  <div class="col"><input type="number" name="tipo" placeholder="Tipo" class="form-control" value="{{ request.GET.tipo }}"></div>
   <div class="col"><input type="date" name="desde" class="form-control" value="{{ request.GET.desde }}"></div>
   <div class="col"><input type="date" name="hasta" class="form-control" value="{{ request.GET.hasta }}"></div>
   <div class="col"><button type="submit" class="btn btn-secondary">Filtrar</button></div>
