@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 """def sobretiempo_list(request):
@@ -30,7 +31,7 @@ from django.views.generic.edit import DeleteView
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'sobretiempo/sobretiempo_list.html', {'page_obj': page_obj})"""
-class SobretiempoListView(ListView):
+class SobretiempoListView(LoginRequiredMixin, ListView):
     model = Sobretiempo
     template_name = 'sobretiempo/sobretiempo_list.html'
     context_object_name = 'page_obj'
@@ -62,7 +63,7 @@ class SobretiempoListView(ListView):
         form.save()
         return redirect('sobretiempo:list')
     return render(request, 'sobretiempo/sobretiempo_form.html', {'form': form})"""
-class SobretiempoCreateView(CreateView):
+class SobretiempoCreateView(LoginRequiredMixin, CreateView):
     model = Sobretiempo
     form_class = SobretiempoForm
     template_name = 'sobretiempo/sobretiempo_form.html'
@@ -75,7 +76,7 @@ class SobretiempoCreateView(CreateView):
         form.save()
         return redirect('sobretiempo:list')
     return render(request, 'sobretiempo/sobretiempo_form.html', {'form': form})"""
-class SobretiempoUpdateView(UpdateView):
+class SobretiempoUpdateView(LoginRequiredMixin, UpdateView):
     model = Sobretiempo
     form_class = SobretiempoForm
     template_name = 'sobretiempo/sobretiempo_form.html'
@@ -87,7 +88,7 @@ class SobretiempoUpdateView(UpdateView):
         st.delete()
         return redirect('sobretiempo:list')
     return render(request, 'sobretiempo/sobretiempo_confirm_delete.html', {'sobretiempo': st})"""
-class SobretiempoDeleteView(DeleteView):
+class SobretiempoDeleteView(LoginRequiredMixin, DeleteView):
     model = Sobretiempo
     template_name = 'sobretiempo/sobretiempo_confirm.html'
     success_url = reverse_lazy('sobretiempo:sobretiempo_list')
