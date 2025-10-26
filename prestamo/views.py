@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 """def prestamo_list(request):
@@ -14,7 +15,7 @@ from django.views.generic.edit import DeleteView
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "prestamos/prestamo_list.html", {"page_obj": page_obj})"""
-class PrestamoListView(ListView):
+class PrestamoListView(LoginRequiredMixin, ListView):
     model = Prestamo
     template_name = 'prestamos/prestamo_list.html'
     context_object_name = 'page_obj'
@@ -29,7 +30,7 @@ class PrestamoListView(ListView):
     else:
         form = PrestamoForm()
     return render(request, 'prestamos/prestamo_form.html', {'form': form})"""
-class PrestamoCreateView(CreateView):
+class PrestamoCreateView(LoginRequiredMixin, CreateView):
     model = Prestamo
     form_class = PrestamoForm
     template_name = 'prestamos/prestamo_form.html'
@@ -38,7 +39,7 @@ class PrestamoCreateView(CreateView):
 """def prestamo_detail(request, pk):
     prestamo = get_object_or_404(Prestamo, pk=pk)
     return render(request, 'prestamos/prestamo_detail.html', {'prestamo': prestamo})"""
-class PrestamoDetailView(DetailView):
+class PrestamoDetailView(LoginRequiredMixin, DetailView):
     model = Prestamo
     template_name = 'prestamos/prestamo_detail.html'
     context_object_name = 'prestamo'
@@ -53,7 +54,7 @@ class PrestamoDetailView(DetailView):
     else:
         form = PrestamoForm(instance=prestamo)
     return render(request, 'prestamos/prestamo_form.html', {'form': form})"""
-class PrestamoUpdateView(UpdateView):
+class PrestamoUpdateView(LoginRequiredMixin, UpdateView):
     model = Prestamo
     form_class = PrestamoForm
     template_name = 'prestamos/prestamo_form.html'
@@ -63,7 +64,7 @@ class PrestamoUpdateView(UpdateView):
     prestamo = get_object_or_404(Prestamo, pk=pk)
     prestamo.delete()
     return redirect('prestamos:prestamo_list')"""
-class PrestamoDeleteView(DeleteView):
+class PrestamoDeleteView(LoginRequiredMixin, DeleteView):
     model = Prestamo
     template_name = 'prestamos/prestamo_confirm_delete.html'
     success_url = reverse_lazy('prestamos:prestamo_list')

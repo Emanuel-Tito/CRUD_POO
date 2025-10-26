@@ -9,6 +9,7 @@ from .forms import EmpleadoForm, NominaForm, NominaDetalleForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 """def home(request):
     # Obtener estadísticas
@@ -29,7 +30,7 @@ from django.contrib.auth import login, logout, authenticate
         "promedio_sueldos": promedio_sueldos,
     }
     return render(request, "nomina/home.html", context)"""
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "nomina/home.html"
 
     def get_context_data(self, **kwargs):
@@ -57,7 +58,7 @@ class HomeView(TemplateView):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "nomina/empleado_list.html", {"page_obj": page_obj})"""
-class EmpleadoListView(ListView):
+class EmpleadoListView(LoginRequiredMixin, ListView):
     model = Empleado
     template_name = "nomina/empleado_list.html"
     context_object_name = "page_obj"
@@ -74,7 +75,7 @@ class EmpleadoListView(ListView):
     else:
         form = EmpleadoForm()
     return render(request, "nomina/empleado_form.html", {"form": form})"""
-class EmpleadoCreateView(CreateView):
+class EmpleadoCreateView(LoginRequiredMixin, CreateView):
     model = Empleado
     form_class = EmpleadoForm
     template_name = "nomina/empleado_form.html"
@@ -96,7 +97,7 @@ class EmpleadoCreateView(CreateView):
     else:
         form = EmpleadoForm(instance=empleado)
     return render(request, "nomina/empleado_form.html", {"form": form})"""
-class EmpleadoUpdateView(UpdateView):
+class EmpleadoUpdateView(LoginRequiredMixin, UpdateView):
     model = Empleado
     form_class = EmpleadoForm
     template_name = "nomina/empleado_form.html"
@@ -116,7 +117,7 @@ class EmpleadoUpdateView(UpdateView):
     return render(
         request, "nomina/empleado_confirm_delete.html", {"empleado": empleado}
     )"""
-class EmpleadoDeleteView(DeleteView):
+class EmpleadoDeleteView(LoginRequiredMixin, DeleteView):
     model = Empleado
     template_name = "nomina/empleado_confirm_delete.html"
     success_url = reverse_lazy("nomina:empleado_list")
@@ -133,7 +134,7 @@ class EmpleadoDeleteView(DeleteView):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "nomina/nomina_list.html", {"page_obj": page_obj})"""
-class NominaListView(ListView):
+class NominaListView(LoginRequiredMixin, ListView):
     model = Nomina
     template_name = "nomina/nomina_list.html"
     context_object_name = "page_obj"
@@ -150,7 +151,7 @@ class NominaListView(ListView):
     else:
         form = NominaForm()
     return render(request, "nomina/nomina_form.html", {"form": form})"""
-class NominaCreateView(CreateView):
+class NominaCreateView(LoginRequiredMixin, CreateView):
     model = Nomina
     form_class = NominaForm
     template_name = "nomina/nomina_form.html"
@@ -180,7 +181,7 @@ class NominaCreateView(CreateView):
         "nomina/nomina_detail.html",
         {"nomina": nomina, "detalles": detalles, "form": form},
     )"""
-class NominaDetailView(DetailView):
+class NominaDetailView(LoginRequiredMixin, DetailView):
     model = Nomina
     template_name = "nomina/nomina_detail.html"
     context_object_name = "nomina"
@@ -208,7 +209,7 @@ class NominaDetailView(DetailView):
         messages.success(request, "Nómina eliminada exitosamente.")
         return redirect("nomina_list")
     return render(request, "nomina/nomina_confirm_delete.html", {"nomina": nomina})"""
-class NominaDeleteView(DeleteView):
+class NominaDeleteView(LoginRequiredMixin, DeleteView):
     model = Nomina
     template_name = "nomina/nomina_confirm_delete.html"
     success_url = reverse_lazy("nomina:nomina_list")
@@ -243,30 +244,15 @@ class NominaDeleteView(DeleteView):
                     "nomina/registro.html",
                     {"form": UserCreationForm, "error": "Contraseña no coincide"},
                 )"""
-class SignupView(FormView):
-    template_name = "nomina/registro.html"
+class SignupView(CreateView):
     form_class = UserCreationForm
+    template_name = "nomina/registro.html"
     success_url = reverse_lazy("nomina:home")
 
     def form_valid(self, form):
-        password1 = self.request.POST.get("password1")
-        password2 = self.request.POST.get("password2")
-        if password1 != password2:
-            return self.form_invalid(form, error="Contraseña no coincide")
-
-        try:
-            user = User.objects.create_user(
-                username=self.request.POST.get("username"),
-                password=password1,
-            )
-            login(self.request, user)
-            return redirect(self.success_url)
-        except IntegrityError:
-            return self.form_invalid(form, error="Usuario ya existe")
-
-    def form_invalid(self, form, error=None):
-        context = {"form": self.form_class(), "error": error} if error else {"form": form}
-        return render(self.request, self.template_name, context)
+        response = super().form_valid(form)
+        login(self.request, self.object) 
+        return response
 # Cierre de sesión
 """def signout_view(request):
     logout(request)
